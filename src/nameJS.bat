@@ -1,0 +1,1 @@
+for /r %%x in (*.txt) do ren "%%x" *.js

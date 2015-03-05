@@ -1,0 +1,17 @@
+{
+    "name": "hsm",
+    "version": "0.9.2",
+    "description": "hierarchical state machine framework",
+    "main": "HSM.js",
+    "scripts": {
+        "test" : "buster-test"
+    },
+    "author": "",
+    "license": "ISC",
+    "directories": {
+        "test": "tests"
+    },
+    "devDependencies": {
+        "buster": "~0.7.0"
+    }
+}
