@@ -12,13 +12,10 @@ LevelManager.prototype = {
 		
         var playerLen = TR.stores.players.length;
         for(var i = 0; i < playerLen; ++i) {
-        	//cc.log("View from player[" + i + "]");
 		    var player = TR.stores.players[i];
 		    var tilePos = player.getComponent('TilePosition');
 
-		    //TAGAlg.FOV.PartialOcclusionFOV.calculateFOV(tilePos.x, tilePos.y);
 		    TAGAlg.FOV.ShadowFOV.calculateFOV(tilePos.x, tilePos.y);
-		    //TAGAlg.FOV.TightShadowFOV.calculateFOV(tilePos.x, tilePos.y);
         }
         
         // If enabled update the lighting
@@ -60,8 +57,6 @@ LevelManager.prototype = {
 		this.tileCache["base"] = cache;
         
         // After grid has been generated initialise systems that operate on grid.
-		//TAGAlg.FOV.PartialOcclusionFOV.init(this.grid, 5);
-		//TAGAlg.FOV.TightShadowFOV.init(this.grid, 10, 1);
 		TAGAlg.FOV.ShadowFOV.init(this.grid, 10, 1);
 		TAGAlg.AStarSimple.init(this.grid);
         TR.lightMgr.init(this.tileCache["base"]);
