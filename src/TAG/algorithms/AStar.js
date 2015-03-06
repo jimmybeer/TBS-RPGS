@@ -160,52 +160,60 @@ TAGAlg.AStarSimple = {
         return [];
     },
     
-    /*
-	 * inRange : function(grid, startX, startY, range, options) {
-	 * this.cleanDirty(grid);
-	 * 
-	 * options = options || {}; var heauristic = options.heuristic ||
-	 * AStarSimple.heurisitics.diagonal; var allowDiagonal =
-	 * options.allowDiagonal || true; var dontCrossCorners =
-	 * options.dontCrossCorners || true;
-	 * 
-	 * var start = grid.getNodeAt(startX, startY);
-	 * 
-	 * var openHeap = new TAGDs.BinaryHeap(function(node) { return node.f });
-	 * 
-	 * openHeap.push(start);
-	 * 
-	 * while(openHeap.size() > 0) { // Grab the lowest f(x) to process next.
-	 * Heap keeps this sorted for us. var currentNode = openHeap.pop();
-	 *  // Normal case -- move currentNode from open to closed, process each of
-	 * its neighbours currentNode.closed = true;
-	 *  // Find all neighbors for the current node. var neighbors =
-	 * grid.getNeighbors(currentNode, allowDiagonal, dontCrossCorners);
-	 * 
-	 * for(var i = 0, il = neighbors.length; i < il; ++i) { var neighbor =
-	 * neighbors[i];
-	 * 
-	 * if(neighbor.closed) { // Not a valid node to process, skip to next
-	 * neighbor. continue; }
-	 *  // The g score is the shortest distance from start to current node. //
-	 * We need to check if the path we have arraived at this neighbor is the
-	 * shortest one we have seen yet. var gScore = currentNode.g +
-	 * neighbor.traversalWeight; var beenVisited = neighbor.visited;
-	 * 
-	 * if(!beenVisited || (gScore < neighbor.g && gScore <= range)) { // Found
-	 * an optimal (so far) path to this node. Take score for node to see how
-	 * good it is. neighbor.visited = true; // store this node.
-	 * //neighbor.parent = currentNode; //neighbor.h = neighbor.h ||
-	 * heuristic(neighbor || end); neighbor.g = gScore; //neighbor.f =
-	 * neighbor.g + neighbor.h; grid.markDirty(neighbor);
-	 * 
-	 * 
-	 * if(!beenVisited) { // pushing to heap will put it in the proper place
-	 * based on the 'f' value. openHeap.push(neighbor); } else { // Already seen
-	 * the node, but since it has been rescored we need to reorder it in the
-	 * heap. openHeap.rescoreElement(neighbor); } } } }
-	 *  // No result was found return []; },
-	 */
+	inRange : function(grid, startX, startY, range,) {
+	    this.cleanDirty();
+	  
+        var available = [];
+	    var start = grid.getNodeAt(startX, startY);
+	    var openHeap = [];//new TAGDs.BinaryHeap(function(node) { return node.aStar.f });
+	    openHeap.push(start);
+        this.dirty.push(start);
+	 
+	    while(openHeap.length > 0) { 
+            // Grab the lowest f(x) to process next. Heap keeps this sorted for us. 
+            var currentNode = openHeap.pop();
+            
+	        // Normal case -- move currentNode from open to closed, process each of
+            // its neighbours 
+            currentNode.aStar.closed = true;
+            
+	        // Find all neighbors for the current node. 
+            var neighbors = grid.getNeighbors(currentNode, this.allowDiagonal, this.dontCrossCorners);
+	 
+            for(var i = 0, il = neighbors.length; i < il; ++i) { 
+                var neighbor = neighbors[i];
+	            if(neighbor.aStar.closed) { 
+                    // Not a valid node to process, skip to next neighbor. 
+                    continue; 
+                }
+                
+	            // The g score is the shortest distance from start to current node. 
+                // We need to check if the path we have arraived at this neighbor is the
+	            // shortest one we have seen yet. 
+                var gScore = currentNode.aStar.g + neighbor.traversalWeight; 
+                var beenVisited = neighbor.visited;
+	
+                if(!beenVisited || (gScore < neighbor.aStar.g && gScore <= range)) { 
+                    // Found an optimal (so far) path to this node. Take score for node to see how good it is. 
+                    neighbor.aStar.visited = true; 
+                    // store this node.
+                    neighbor.aStar.g = gScore; 
+	
+                    if(!beenVisited) { 
+                        // pushing to heap will put it in the proper place based on the 'f' value. 
+                        openHeap.push(neighbor); 
+                        this.dirty.push(neighbor);
+                        available.push(neighbor);
+                    } else { 
+                        // Already seen the node, but since it has been rescored we need to reorder it in the heap. 
+                        //openHeap.rescoreElement(neighbor); 
+                    } 
+                } 
+            } 
+        }
+	    // No result was found 
+        return available; 
+    },
     
     // See list of heuristics:
 	// http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
